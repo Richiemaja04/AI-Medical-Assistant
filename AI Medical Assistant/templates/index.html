@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Medical Assistant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Auth screens -->
+        <div id="auth-screen" class="screen active">
+            <div class="auth-container">
+                <div class="logo">
+                    <i class="fas fa-heartbeat"></i>
+                    <h1>MediAssist AI</h1>
+                </div>
+                
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="login">Login</button>
+                    <button class="tab-btn" data-tab="register">Register</button>
+                </div>
+                
+                <div id="login-form" class="auth-form active">
+                    <h2>Welcome Back</h2>
+                    <div class="form-group">
+                        <label for="login-username">Username</label>
+                        <input type="text" id="login-username" placeholder="Enter your username">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" placeholder="Enter your password">
+                    </div>
+                    <button id="login-btn" class="primary-btn">Login</button>
+                    <p class="form-error" id="login-error"></p>
+                </div>
+                
+                <div id="register-form" class="auth-form">
+                    <h2>Create Account</h2>
+                    <div class="form-group">
+                        <label for="register-username">Username</label>
+                        <input type="text" id="register-username" placeholder="Choose a username">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" id="register-email" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" id="register-password" placeholder="Choose a password">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-confirm">Confirm Password</label>
+                        <input type="password" id="register-confirm" placeholder="Confirm your password">
+                    </div>
+                    <button id="register-btn" class="primary-btn">Register</button>
+                    <p class="form-error" id="register-error"></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Medical Profile Form -->
+        <div id="profile-setup-screen" class="screen">
+            <div class="profile-setup-container">
+                <h2>Complete Your Medical Profile</h2>
+                <p>Please provide your medical information to help us personalize your experience.</p>
+                
+                <form id="medical-profile-form" class="multi-column-form">
+                    <div class="form-column">
+                        <div class="form-group">
+                            <label for="height">Height (cm)</label>
+                            <input type="number" id="height" placeholder="Height in cm">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="weight">Weight (kg)</label>
+                            <input type="number" id="weight" placeholder="Weight in kg">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="blood-type">Blood Type</label>
+                            <select id="blood-type">
+                                <option value="">Select Blood Type</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="language">Preferred Language</label>
+                            <select id="language">
+                                <option value="en-US">English (US)</option>
+                                <option value="es-ES">Spanish (Spain)</option>
+                                <option value="fr-FR">French (France)</option>
+                                <option value="de-DE">German (Germany)</option>
+                                <option value="it-IT">Italian (Italy)</option>
+                                <option value="ja-JP">Japanese (Japan)</option>
+                                <option value="zh-CN">Chinese (Simplified)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-column">
+                        <div class="form-group">
+                            <label for="allergies">Allergies</label>
+                            <textarea id="allergies" placeholder="List your allergies (if any)"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="medical-conditions">Medical Conditions</label>
+                            <textarea id="medical-conditions" placeholder="List any medical conditions"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="emergency-contact">Emergency Contact</label>
+                            <input type="text" id="emergency-contact" placeholder="Name and phone number">
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" id="save-profile-btn" class="primary-btn">Save Profile & Continue</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Main Application Screen -->
+        <div id="main-screen" class="screen">
+            <div class="sidebar">
+                <div class="logo">
+                    <i class="fas fa-heartbeat"></i>
+                    <h2>MediAssist</h2>
+                </div>
+                <nav>
+                    <ul>
+                        <li class="nav-item active" data-section="dashboard">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </li>
+                        <li class="nav-item" data-section="medications">
+                            <i class="fas fa-pills"></i>
+                            <span>Medications</span>
+                        </li>
+                        <li class="nav-item" data-section="appointments">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>Appointments</span>
+                        </li>
+                        <li class="nav-item" data-section="timers">
+                            <i class="fas fa-clock"></i>
+                            <span>Timers</span>
+                        </li>
+                        <li class="nav-item" data-section="insights">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Health Insights</span>
+                        </li>
+                        <li class="nav-item" data-section="profile">
+                            <i class="fas fa-user"></i>
+                            <span>My Profile</span>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="sidebar-footer">
+                    <button id="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <div class="top-bar">
+                    <div class="user-info">
+                        <span id="greeting">Hello, User!</span>
+                    </div>
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count" id="notification-count">0</span>
+                    </div>
+                </div>
+                
+                <!-- Dashboard Section -->
+                <section id="dashboard-section" class="content-section active">
+                    <h2>Dashboard</h2>
+                    
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card" id="upcoming-medications">
+                            <div class="card-header">
+                                <h3>Upcoming Medications</h3>
+                                <span class="card-count" id="medication-count">0</span>
+                            </div>
+                            <div class="card-content">
+                                <ul id="medication-list" class="dash-list">
+                                    <!-- List items will be added dynamically -->
+                                    <li class="empty-list">No upcoming medications</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card" id="upcoming-appointments">
+                            <div class="card-header">
+                                <h3>Upcoming Appointments</h3>
+                                <span class="card-count" id="appointment-count">0</span>
+                            </div>
+                            <div class="card-content">
+                                <ul id="appointment-list" class="dash-list">
+                                    <!-- List items will be added dynamically -->
+                                    <li class="empty-list">No upcoming appointments</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card" id="health-insights-card">
+                            <div class="card-header">
+                                <h3>Recent Health Insights</h3>
+                            </div>
+                            <div class="card-content">
+                                <ul id="insight-list" class="dash-list">
+                                    <!-- List items will be added dynamically -->
+                                    <li class="empty-list">No recent insights</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card" id="active-timers-card">
+                            <div class="card-header">
+                                <h3>Active Timers</h3>
+                            </div>
+                            <div class="card-content">
+                                <ul id="timer-list" class="dash-list">
+                                    <!-- List items will be added dynamically -->
+                                    <li class="empty-list">No active timers</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- AI Assistant Chat Interface -->
+                    <div class="chat-container">
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="assistant-message">
+                                <div class="message-avatar">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div class="message-content">
+                                    <p>Hello! I'm your AI Medical Assistant. How can I help you today?</p>
+                                </div>
+                            </div>
+                            <!-- Messages will be added dynamically -->
+                        </div>
+                        
+                        <div class="chat-input">
+                            <input type="text" id="chat-input-field" placeholder="Ask me anything...">
+                            <button id="voice-input-btn">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                            <button id="send-message-btn">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Medications Section -->
+                <section id="medications-section" class="content-section">
+                    <h2>Medications</h2>
+                    
+                    <div class="section-actions">
+                        <button id="add-medication-btn" class="action-btn">
+                            <i class="fas fa-plus"></i> Add Medication
+                        </button>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table id="medications-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Dosage</th>
+                                    <th>Frequency</th>
+                                    <th>Time of Day</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="medications-table-body">
+                                <!-- Table rows will be added dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Add Medication Modal -->
+                    <div id="add-medication-modal" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Add New Medication</h3>
+                                <button class="close-modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="add-medication-form">
+                                    <div class="form-group">
+                                        <label for="medication-name">Medication Name</label>
+                                        <input type="text" id="medication-name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="medication-dosage">Dosage</label>
+                                        <input type="text" id="medication-dosage" required placeholder="e.g., 10mg">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="medication-frequency">Frequency</label>
+                                        <select id="medication-frequency" required>
+                                            <option value="">Select Frequency</option>
+                                            <option value="Once daily">Once daily</option>
+                                            <option value="Twice daily">Twice daily</option>
+                                            <option value="Three times daily">Three times daily</option>
+                                            <option value="Every other day">Every other day</option>
+                                            <option value="Weekly">Weekly</option>
+                                            <option value="As needed">As needed</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="medication-time">Time of Day</label>
+                                        <input type="text" id="medication-time" required placeholder="e.g., 8:00 AM, 6:00 PM">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="medication-notes">Notes (Optional)</label>
+                                        <textarea id="medication-notes"></textarea>
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="submit" class="primary-btn">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Appointments Section -->
+                <section id="appointments-section" class="content-section">
+                    <h2>Appointments</h2>
+                    
+                    <div class="section-actions">
+                        <button id="add-appointment-btn" class="action-btn">
+                            <i class="fas fa-plus"></i> Add Appointment
+                        </button>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table id="appointments-table">
+                            <thead>
+                                <tr>
+                                    <th>Doctor</th>
+                                    <th>Specialty</th>
+                                    <th>Location</th>
+                                    <th>Date & Time</th>
+                                    <th>Purpose</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="appointments-table-body">
+                                <!-- Table rows will be added dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Add Appointment Modal -->
+                    <div id="add-appointment-modal" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Add New Appointment</h3>
+                                <button class="close-modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="add-appointment-form">
+                                    <div class="form-group">
+                                        <label for="doctor-name">Doctor Name</label>
+                                        <input type="text" id="doctor-name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="doctor-specialty">Specialty</label>
+                                        <input type="text" id="doctor-specialty">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="appointment-location">Location</label>
+                                        <input type="text" id="appointment-location" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="appointment-date">Date</label>
+                                        <input type="date" id="appointment-date" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="appointment-time">Time</label>
+                                        <input type="time" id="appointment-time" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="appointment-purpose">Purpose</label>
+                                        <input type="text" id="appointment-purpose">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="appointment-notes">Notes (Optional)</label>
+                                        <textarea id="appointment-notes"></textarea>
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="submit" class="primary-btn">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Timers Section -->
+                <section id="timers-section" class="content-section">
+                    <h2>Medical Timers</h2>
+                    
+                    <div class="section-actions">
+                        <button id="add-timer-btn" class="action-btn">
+                            <i class="fas fa-plus"></i> Add Timer
+                        </button>
+                    </div>
+                    
+                    <div class="timers-grid" id="timers-grid">
+                        <!-- Timers will be added dynamically -->
+                        <div class="empty-state">
+                            <i class="fas fa-clock empty-icon"></i>
+                            <p>No timers yet. Add a timer for your medical tasks.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Add Timer Modal -->
+                    <div id="add-timer-modal" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Add New Timer</h3>
+                                <button class="close-modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="add-timer-form">
+                                    <div class="form-group">
+                                        <label for="timer-name">Timer Name</label>
+                                        <input type="text" id="timer-name" required placeholder="e.g., Therapy session">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="timer-duration">Duration</label>
+                                        <div class="duration-inputs">
+                                            <div class="duration-input">
+                                                <input type="number" id="timer-hours" min="0" max="23" value="0">
+                                                <label for="timer-hours">Hours</label>
+                                            </div>
+                                            <div class="duration-input">
+                                                <input type="number" id="timer-minutes" min="0" max="59" value="10">
+                                                <label for="timer-minutes">Minutes</label>
+                                            </div>
+                                            <div class="duration-input">
+                                                <input type="number" id="timer-seconds" min="0" max="59" value="0">
+                                                <label for="timer-seconds">Seconds</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="submit" class="primary-btn">Create Timer</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Health Insights Section -->
+                <section id="insights-section" class="content-section">
+                    <h2>Health Insights</h2>
+                    
+                    <div class="insights-grid" id="insights-grid">
+                        <!-- Insights will be added dynamically -->
+                    </div>
+                </section>
+                
+                <!-- Profile Section -->
+                <section id="profile-section" class="content-section">
+                    <h2>My Profile</h2>
+                    
+                    <div class="profile-container">
+                        <div class="profile-header">
+                            <div class="profile-avatar">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="profile-info">
+                                <h3 id="profile-name">User Name</h3>
+                                <p id="profile-email">user@example.com</p>
+                            </div>
+                        </div>
+                        
+                        <form id="edit-profile-form" class="multi-column-form">
+                            <div class="form-column">
+                                <div class="form-group">
+                                    <label for="edit-height">Height (cm)</label>
+                                    <input type="number" id="edit-height">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="edit-weight">Weight (kg)</label>
+                                    <input type="number" id="edit-weight">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="edit-blood-type">Blood Type</label>
+                                    <select id="edit-blood-type">
+                                        <option value="">Select Blood Type</option>
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="edit-language">Preferred Language</label>
+                                    <select id="edit-language">
+                                        <option value="en-US">English (US)</option>
+                                        <option value="es-ES">Spanish (Spain)</option>
+                                        <option value="fr-FR">French (France)</option>
+                                        <option value="de-DE">German (Germany)</option>
+                                        <option value="it-IT">Italian (Italy)</option>
+                                        <option value="ja-JP">Japanese (Japan)</option>
+                                        <option value="zh-CN">Chinese (Simplified)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-column">
+                                <div class="form-group">
+                                    <label for="edit-allergies">Allergies</label>
+                                    <textarea id="edit-allergies"></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="edit-medical-conditions">Medical Conditions</label>
+                                    <textarea id="edit-medical-conditions"></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="edit-emergency-contact">Emergency Contact</label>
+                                    <input type="text" id="edit-emergency-contact">
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="primary-btn">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </div>
+        
+        <!-- Notification Panel -->
+        <div id="notification-panel" class="notification-panel">
+            <div class="notification-header">
+                <h3>Notifications</h3>
+                <button id="close-notifications" class="close-btn">&times;</button>
+            </div>
+            <div class="notification-list" id="notification-list">
+                <!-- Notifications will be added dynamically -->
+                <div class="empty-notifications">
+                    <i class="fas fa-bell-slash"></i>
+                    <p>No new notifications</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Voice Recording Indicator -->
+        <div id="voice-indicator" class="voice-indicator">
+            <div class="voice-indicator-inner">
+                <i class="fas fa-microphone pulse"></i>
+                <p>Listening...</p>
+                <button id="stop-recording-btn" class="stop-recording-btn">
+                    <i class="fas fa-stop-circle"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
